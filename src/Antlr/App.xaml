@@ -1,0 +1,11 @@
+﻿<Application x:Class="Antlr.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:antlr="clr-namespace:Antlr"
+             xmlns:valueConverter="clr-namespace:Antlr.ValueConverter"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <valueConverter:MarginLeftValueConverter x:Key="MarginLeftValueConverter" />
+        <valueConverter:StatusValueConverter x:Key="StatusValueConverter" />
+    </Application.Resources>
+</Application>
