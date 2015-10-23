@@ -121,7 +121,10 @@ namespace Antlr.ViewModels
                             Status = filterStatus
                         });
 
-                    DepthFirstSearch(directory, filterResultViewModels, level, filterStatus);
+                    if (Recursive)
+                    {
+                        DepthFirstSearch(directory, filterResultViewModels, level, filterStatus);
+                    }
 
                 }
             }
