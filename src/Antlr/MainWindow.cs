@@ -2,6 +2,8 @@
 
 namespace Antlr
 {
+    using System.IO;
+
     using Antlr.ViewModels;
 
     /// <summary>
@@ -13,6 +15,8 @@ namespace Antlr
         {
             var mainWindowViewModel = new MainWindowViewModel();
             mainWindowViewModel.Recursive = true;
+            mainWindowViewModel.ProjectUri = Directory.GetCurrentDirectory();
+            mainWindowViewModel.Filter = @"**\bin\**";
             mainWindowViewModel.SetupCommands();
             
             DataContext = mainWindowViewModel;
