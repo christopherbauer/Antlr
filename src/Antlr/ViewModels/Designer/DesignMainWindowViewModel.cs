@@ -1,6 +1,7 @@
 namespace Antlr.ViewModels.Designer
 {
     using System.Collections.Generic;
+    using System.Threading;
 
     using Antlr.Core;
 
@@ -9,7 +10,9 @@ namespace Antlr.ViewModels.Designer
         public DesignMainWindowViewModel()
         {
             this.ProjectUri = @"C:\svn\Antler";
-            this.AntLikeFilter = @"**/docs/**";
+            this.Filter = @"**/docs/**";
+            this.HideChildren = true;
+            this.FilterRemoves = true;
             this.LastFilterResult = new List<FilterResultViewModel>
                                    {
                                        new FilterResultViewModel
