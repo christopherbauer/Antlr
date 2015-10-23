@@ -2,7 +2,7 @@
 
 namespace Antlr
 {
-    using Antlr.ViewModels.Designer;
+    using Antlr.ViewModels;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -11,7 +11,11 @@ namespace Antlr
     {
         public MainWindow()
         {
-            DataContext = new DesignMainWindowViewModel();
+            var mainWindowViewModel = new MainWindowViewModel();
+            mainWindowViewModel.Recursive = true;
+            mainWindowViewModel.SetupCommands();
+            
+            DataContext = mainWindowViewModel;
             InitializeComponent();
         }
     }

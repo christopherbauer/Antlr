@@ -59,6 +59,7 @@
     <Compile Include="ViewModels\Designer\DesignMainWindowViewModel.cs" />
     <Compile Include="ViewModels\FilterResultViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
