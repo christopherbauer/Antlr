@@ -5,7 +5,7 @@ namespace Antlr.ViewModels.Designer
 
     public class DesignMainWindowViewModel : MainWindowViewModel
     {
-        public DesignMainWindowViewModel() : base(new StatusReader(new AntRegexGenerator()))
+        public DesignMainWindowViewModel() : base(new StatusReader(new AntRegexGenerator()), new DirectoryCrawler(new StatusReader(new AntRegexGenerator())))
         {
             ProjectUri = @"C:\svn\Antler";
             Filter = @"**/docs/**";
