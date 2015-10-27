@@ -113,26 +113,9 @@ namespace Antlr.ViewModels
             var exists = Directory.Exists(ProjectUri);
             if (exists)
             {
-                var directories = Directory.EnumerateDirectories(ProjectUri); //could depth-first from here, but I want the root-level folders to have ./ instead of /
-
-                foreach (var directory in directories)
+                if (Recursive)
                 {
-                    var level = 1;
-                    var filterStatus = _statusReader.GetFilterStatus(directory, Filter, FilterStatus.Found, ProjectUri, FilterRemoves);
-                    filterResults.Add(
-                        new FilterResult
-                        {
-                            FullPath = directory,
-                            RelativePath = "." + directory.Remove(0, _projectUri.Length),
-                            Level = level,
-                            Status = filterStatus
-                        });
-
-                    if (Recursive)
-                    {
-                        _directoryCrawler.DepthFirstSearch(filterResults, directory, level, filterStatus, Filter, ProjectUri, FilterRemoves, HideChildren);
-                    }
-
+                    filterResults = _directoryCrawler.StartSearch(ProjectUri, FilterStatus.Found, Filter, FilterRemoves, HideChildren);
                 }
             }
             else
