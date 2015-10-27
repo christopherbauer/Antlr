@@ -4,7 +4,7 @@ namespace Antlr.Core
     using System.Text;
     using System.Text.RegularExpressions;
 
-    public class AntRegexGenerator
+    public class AntRegexGenerator : IAntRegexGenerator
     {
         public Regex GetRegexForFilter(string filter)
         {

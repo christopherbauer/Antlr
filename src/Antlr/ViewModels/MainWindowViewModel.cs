@@ -1,25 +1,28 @@
 namespace Antlr.ViewModels
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Windows.Input;
 
-    using Antlr.Core;
+    using Core;
 
     public class MainWindowViewModel : ViewModelBase
     {
-        private IEnumerable<FilterResultViewModel> lastFilterResult;
-        private string projectUri;
-        private string filter;
+        private IEnumerable<FilterResultViewModel> _lastFilterResult;
+        private string _projectUri;
+        private string _filter;
 
-        private bool recursive;
+        private bool _recursive;
 
-        private bool hideChildren;
+        private bool _hideChildren;
 
-        private AntRegexGenerator antRegexGenerator = new AntRegexGenerator();
+        private bool _filterRemoves;
+        private readonly StatusReader _statusReader;
 
-        private bool filterRemoves;
+        public MainWindowViewModel(StatusReader statusReader)
+        {
+            _statusReader = statusReader;
+        }
 
         public void SetupCommands()
         {
@@ -30,11 +33,11 @@ namespace Antlr.ViewModels
         {
             get
             {
-                return this.projectUri;
+                return _projectUri;
             }
             set
             {
-                SetValue(ref this.projectUri, value);
+                SetValue(ref _projectUri, value);
             }
         }
 
@@ -42,11 +45,11 @@ namespace Antlr.ViewModels
         {
             get
             {
-                return this.filter;
+                return _filter;
             }
             set
             {
-                SetValue(ref this.filter, value);
+                SetValue(ref _filter, value);
             }
         }
 
@@ -54,11 +57,11 @@ namespace Antlr.ViewModels
         {
             get
             {
-                return this.recursive;
+                return _recursive;
             }
             set
             {
-                this.SetValue(ref this.recursive, value);
+                SetValue(ref _recursive, value);
             }
         }
 
@@ -66,11 +69,11 @@ namespace Antlr.ViewModels
         {
             get
             {
-                return this.hideChildren;
+                return _hideChildren;
             }
             set
             {
-                this.SetValue(ref this.hideChildren, value);
+                SetValue(ref _hideChildren, value);
             }
         }
 
@@ -78,11 +81,11 @@ namespace Antlr.ViewModels
         {
             get
             {
-                return this.filterRemoves;
+                return _filterRemoves;
             }
             set
             {
-                SetValue(ref this.filterRemoves, value);
+                SetValue(ref _filterRemoves, value);
             }
         }
 
@@ -90,11 +93,11 @@ namespace Antlr.ViewModels
         {
             get
             {
-                return this.lastFilterResult;
+                return _lastFilterResult;
             }
             set
             {
-                SetValue(ref this.lastFilterResult, value);
+                SetValue(ref _lastFilterResult, value);
             }
         }
 
@@ -111,12 +114,12 @@ namespace Antlr.ViewModels
                 foreach (var directory in directories)
                 {
                     var level = 1;
-                    var filterStatus = this.GetFilterStatus(directory, this.Filter, FilterStatus.Found);
+                    var filterStatus = _statusReader.GetFilterStatus(directory, Filter, FilterStatus.Found, ProjectUri, FilterRemoves);
                     filterResultViewModels.Add(
                         new FilterResultViewModel
                         {
                             FullPath = directory,
-                            RelativePath = "." + directory.Remove(0, projectUri.Length),
+                            RelativePath = "." + directory.Remove(0, _projectUri.Length),
                             Level = level,
                             Status = filterStatus
                         });
@@ -132,29 +135,7 @@ namespace Antlr.ViewModels
             {
                 return;
             }
-            this.LastFilterResult = filterResultViewModels;
-        }
-
-        private FilterStatus GetFilterStatus(string directory, string filter, FilterStatus parentFilterStatus)
-        {
-            filter = filter.Replace("\\", "\\\\");
-            var tempDirectory = directory.Remove(0, ProjectUri.Length);
-            if (parentFilterStatus != FilterStatus.Ignored && parentFilterStatus != FilterStatus.ParentIgnored)
-            {
-                var regex = this.antRegexGenerator.GetRegexForFilter(filter);
-                if (FilterRemoves)
-                {
-                    return regex.IsMatch(tempDirectory) ? FilterStatus.Ignored : FilterStatus.Found;
-                }
-                else
-                {
-                    return regex.IsMatch(tempDirectory) ? FilterStatus.Found : FilterStatus.Ignored;
-                }
-            }
-            else
-            {
-                return FilterStatus.ParentIgnored;
-            }
+            LastFilterResult = filterResultViewModels;
         }
 
         private void DepthFirstSearch(string directory, List<FilterResultViewModel> filterResultViewModels, int level, FilterStatus parentFilterStatus)
@@ -168,7 +149,7 @@ namespace Antlr.ViewModels
             var thisLevel = level + 1;
             foreach (var subDirectory in subDirectories)
             {
-                var filterStatus = this.GetFilterStatus(subDirectory, this.Filter, parentFilterStatus);
+                var filterStatus = _statusReader.GetFilterStatus(subDirectory, Filter, parentFilterStatus, ProjectUri, FilterRemoves);
                 filterResultViewModels.Add(
                     new FilterResultViewModel
                         {
@@ -189,7 +170,7 @@ namespace Antlr.ViewModels
                                 FullPath = file,
                                 RelativePath = file.Remove(0, directory.Length),
                                 Level = thisLevel,
-                                Status = GetFilterStatus(file, Filter, parentFilterStatus)
+                                Status = _statusReader.GetFilterStatus(file, Filter, parentFilterStatus, ProjectUri, FilterRemoves)
                             });
                 }
             }

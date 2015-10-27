@@ -1,19 +1,17 @@
 namespace Antlr.ViewModels.Designer
 {
     using System.Collections.Generic;
-    using System.Threading;
-
-    using Antlr.Core;
+    using Core;
 
     public class DesignMainWindowViewModel : MainWindowViewModel
     {
-        public DesignMainWindowViewModel()
+        public DesignMainWindowViewModel() : base(new StatusReader(new AntRegexGenerator()))
         {
-            this.ProjectUri = @"C:\svn\Antler";
-            this.Filter = @"**/docs/**";
-            this.HideChildren = true;
-            this.FilterRemoves = true;
-            this.LastFilterResult = new List<FilterResultViewModel>
+            ProjectUri = @"C:\svn\Antler";
+            Filter = @"**/docs/**";
+            HideChildren = true;
+            FilterRemoves = true;
+            LastFilterResult = new List<FilterResultViewModel>
                                    {
                                        new FilterResultViewModel
                                            {

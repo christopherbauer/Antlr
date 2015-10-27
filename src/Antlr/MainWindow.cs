@@ -1,10 +1,11 @@
 ﻿using System.Windows;
+using Antlr.Core;
 
 namespace Antlr
 {
     using System.IO;
 
-    using Antlr.ViewModels;
+    using ViewModels;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -13,10 +14,12 @@ namespace Antlr
     {
         public MainWindow()
         {
-            var mainWindowViewModel = new MainWindowViewModel();
-            mainWindowViewModel.Recursive = true;
-            mainWindowViewModel.ProjectUri = Directory.GetCurrentDirectory();
-            mainWindowViewModel.Filter = @"**\bin\**";
+            var mainWindowViewModel = new MainWindowViewModel(new StatusReader(new AntRegexGenerator()))
+            {
+                Recursive = true,
+                ProjectUri = Directory.GetCurrentDirectory(),
+                Filter = @"**\bin\**"
+            };
             mainWindowViewModel.SetupCommands();
             
             DataContext = mainWindowViewModel;

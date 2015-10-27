@@ -5,7 +5,7 @@ namespace Antlr.ValueConverter
     using System.Windows.Data;
     using System.Windows.Media;
 
-    using Antlr.Core;
+    using Core;
 
     public class StatusValueConverter : IValueConverter
     {
@@ -17,7 +17,7 @@ namespace Antlr.ValueConverter
             if (value != null)
             {
                 var status = (FilterStatus)value;
-                filterColor = this.filterColorHelper.GetFilterColor(status);
+                filterColor = filterColorHelper.GetFilterColor(status);
             }
 
             return new SolidColorBrush(filterColor);
