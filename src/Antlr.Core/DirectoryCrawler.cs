@@ -12,12 +12,12 @@ namespace Antlr.Core
             _statusReader = statusReader;
         }
 
-        public List<FilterResult> StartSearch(string directory, FilterStatus parentFilterStatus, string filter, bool filterRemoves, bool hideChildren = false)
+        public List<FilterResult> StartSearch(string directory, FilterStatus parentFilterStatus, string filter, bool filterRemoves, bool hideChildren = false, bool recursive = true)
         {
-            return DepthFirstSearch(new List<FilterResult>(), directory, 0, parentFilterStatus, filter, directory, filterRemoves, hideChildren);
+            return DepthFirstSearch(new List<FilterResult>(), directory, 0, parentFilterStatus, filter, directory, filterRemoves, hideChildren, recursive);
         }
 
-        private List<FilterResult> DepthFirstSearch(List<FilterResult> accumulator, string directory, int level, FilterStatus parentFilterStatus, string filter, string projectUri, bool filterRemoves, bool hideChildren = false)
+        private List<FilterResult> DepthFirstSearch(List<FilterResult> accumulator, string directory, int level, FilterStatus parentFilterStatus, string filter, string projectUri, bool filterRemoves, bool hideChildren, bool recursive)
         {
             if (hideChildren
                 && (parentFilterStatus == FilterStatus.Ignored || parentFilterStatus == FilterStatus.ParentIgnored))
@@ -38,7 +38,11 @@ namespace Antlr.Core
                         Status = filterStatus
                     });
 
-                DepthFirstSearch(accumulator, subDirectory, thisLevel, filterStatus, filter, projectUri, filterRemoves, hideChildren);
+                if (recursive)
+                {
+                    DepthFirstSearch(accumulator, subDirectory, thisLevel, filterStatus, filter, projectUri,
+                        filterRemoves, hideChildren, recursive);
+                }
 
             }
             var files = Directory.GetFiles(directory);
