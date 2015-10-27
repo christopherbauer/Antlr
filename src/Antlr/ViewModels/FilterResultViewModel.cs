@@ -1,6 +1,6 @@
 namespace Antlr.ViewModels
 {
-    using Antlr.Core;
+    using Core;
 
     public class FilterResultViewModel
     {
@@ -12,7 +12,7 @@ namespace Antlr.ViewModels
         public decimal GetIndent {
             get
             {
-                return this.Level * 25; 
+                return Level * 25; 
             }
         }
     }

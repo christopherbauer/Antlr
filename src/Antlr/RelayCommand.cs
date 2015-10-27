@@ -19,7 +19,7 @@ namespace Antlr
 
         public void Execute(object parameter)
         {
-            this.action();
+            action();
         }
 
         public event EventHandler CanExecuteChanged;

@@ -12,8 +12,6 @@
             [TestCase("A")]
             [TestCase("a")]
             [TestCase("1")]
-            [TestCase("/")]
-            [TestCase("\\")]
             [TestCase(".")]
             public void then_should_be_true_given_single_character_and_filter_equals_one_star(string character)
             {
@@ -24,7 +22,23 @@
                 var regex = generator.GetRegexForFilter("*");
 
                 // Assert
-                Assert.That(regex.IsMatch(character), Is.True);
+                var isMatch = regex.IsMatch(character);
+                Assert.That(isMatch, Is.True);
+            }
+            [Test]
+
+            [TestCase("/")]
+            [TestCase("\\")]
+            public void then_should_be_false_given_directory_character_and_filter_equals_one_star(string character)
+            {
+                // Arrange
+                var generator = new AntRegexGenerator();
+
+                // Act
+                var regex = generator.GetRegexForFilter("*");
+
+                // Assert
+                Assert.That(regex.IsMatch(character), Is.False);
             }
             [Test]
             [TestCase("test/")]
