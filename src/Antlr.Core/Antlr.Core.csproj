@@ -40,7 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DirectoryCrawler.cs" />
     <Compile Include="FilterColorHelper.cs" />
+    <Compile Include="FilterResult.cs" />
     <Compile Include="FilterStatus.cs" />
     <Compile Include="IAntRegexGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

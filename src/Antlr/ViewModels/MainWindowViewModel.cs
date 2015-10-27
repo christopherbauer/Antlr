@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace Antlr.ViewModels
 {
     using System.Collections.Generic;
@@ -18,10 +20,12 @@ namespace Antlr.ViewModels
 
         private bool _filterRemoves;
         private readonly StatusReader _statusReader;
+        private readonly DirectoryCrawler _directoryCrawler;
 
-        public MainWindowViewModel(StatusReader statusReader)
+        public MainWindowViewModel(StatusReader statusReader, DirectoryCrawler directoryCrawler)
         {
             _statusReader = statusReader;
+            _directoryCrawler = directoryCrawler;
         }
 
         public void SetupCommands()
@@ -105,7 +109,7 @@ namespace Antlr.ViewModels
 
         public void RefreshFilterResults()
         {
-            var filterResultViewModels = new List<FilterResultViewModel>();
+            var filterResults = new List<FilterResult>();
             var exists = Directory.Exists(ProjectUri);
             if (exists)
             {
@@ -115,8 +119,8 @@ namespace Antlr.ViewModels
                 {
                     var level = 1;
                     var filterStatus = _statusReader.GetFilterStatus(directory, Filter, FilterStatus.Found, ProjectUri, FilterRemoves);
-                    filterResultViewModels.Add(
-                        new FilterResultViewModel
+                    filterResults.Add(
+                        new FilterResult
                         {
                             FullPath = directory,
                             RelativePath = "." + directory.Remove(0, _projectUri.Length),
@@ -126,7 +130,7 @@ namespace Antlr.ViewModels
 
                     if (Recursive)
                     {
-                        DepthFirstSearch(directory, filterResultViewModels, level, filterStatus);
+                        _directoryCrawler.DepthFirstSearch(filterResults, directory, level, filterStatus, Filter, ProjectUri, FilterRemoves, HideChildren);
                     }
 
                 }
@@ -135,45 +139,13 @@ namespace Antlr.ViewModels
             {
                 return;
             }
-            LastFilterResult = filterResultViewModels;
-        }
-
-        private void DepthFirstSearch(string directory, List<FilterResultViewModel> filterResultViewModels, int level, FilterStatus parentFilterStatus)
-        {
-            if (HideChildren
-                && (parentFilterStatus == FilterStatus.Ignored || parentFilterStatus == FilterStatus.ParentIgnored))
+            LastFilterResult = filterResults.Select(result => new FilterResultViewModel
             {
-                return;
-            }
-            var subDirectories = Directory.EnumerateDirectories(directory);
-            var thisLevel = level + 1;
-            foreach (var subDirectory in subDirectories)
-            {
-                var filterStatus = _statusReader.GetFilterStatus(subDirectory, Filter, parentFilterStatus, ProjectUri, FilterRemoves);
-                filterResultViewModels.Add(
-                    new FilterResultViewModel
-                        {
-                            FullPath = subDirectory,
-                            RelativePath = subDirectory.Remove(0, directory.Length),
-                            Level = thisLevel,
-                            Status = filterStatus
-                        });
-
-                DepthFirstSearch(subDirectory, filterResultViewModels, thisLevel, filterStatus);
-
-                var files = Directory.GetFiles(directory);
-                foreach (var file in files)
-                {
-                    filterResultViewModels.Add(
-                        new FilterResultViewModel
-                            {
-                                FullPath = file,
-                                RelativePath = file.Remove(0, directory.Length),
-                                Level = thisLevel,
-                                Status = _statusReader.GetFilterStatus(file, Filter, parentFilterStatus, ProjectUri, FilterRemoves)
-                            });
-                }
-            }
+                FullPath = result.FullPath,
+                Level = result.Level,
+                RelativePath = result.RelativePath,
+                Status = result.Status
+            });
         }
     }
 }
