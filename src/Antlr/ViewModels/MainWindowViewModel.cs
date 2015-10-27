@@ -113,10 +113,8 @@ namespace Antlr.ViewModels
             var exists = Directory.Exists(ProjectUri);
             if (exists)
             {
-                if (Recursive)
-                {
-                    filterResults = _directoryCrawler.StartSearch(ProjectUri, FilterStatus.Found, Filter, FilterRemoves, HideChildren);
-                }
+                filterResults = _directoryCrawler.StartSearch(ProjectUri, FilterStatus.Found, Filter, FilterRemoves,
+                    HideChildren, Recursive);
             }
             else
             {
