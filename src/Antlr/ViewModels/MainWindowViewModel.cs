@@ -13,18 +13,13 @@ namespace Antlr.ViewModels
         private IEnumerable<FilterResultViewModel> _lastFilterResult;
         private string _projectUri;
         private string _filter;
-
         private bool _recursive;
-
         private bool _hideChildren;
-
         private bool _filterRemoves;
-        private readonly StatusReader _statusReader;
         private readonly DirectoryCrawler _directoryCrawler;
 
-        public MainWindowViewModel(StatusReader statusReader, DirectoryCrawler directoryCrawler)
+        public MainWindowViewModel(DirectoryCrawler directoryCrawler)
         {
-            _statusReader = statusReader;
             _directoryCrawler = directoryCrawler;
         }
 
@@ -110,16 +105,14 @@ namespace Antlr.ViewModels
         public void RefreshFilterResults()
         {
             var filterResults = new List<FilterResult>();
+            
             var exists = Directory.Exists(ProjectUri);
             if (exists)
             {
                 filterResults = _directoryCrawler.StartSearch(ProjectUri, FilterStatus.Found, Filter, FilterRemoves,
                     HideChildren, Recursive);
             }
-            else
-            {
-                return;
-            }
+
             LastFilterResult = filterResults.Select(result => new FilterResultViewModel
             {
                 FullPath = result.FullPath,

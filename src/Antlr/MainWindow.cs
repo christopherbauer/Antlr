@@ -15,7 +15,7 @@ namespace Antlr
         public MainWindow()
         {
             var statusReader = new StatusReader(new AntRegexGenerator());
-            var mainWindowViewModel = new MainWindowViewModel(statusReader, new DirectoryCrawler(statusReader))
+            var mainWindowViewModel = new MainWindowViewModel(new DirectoryCrawler(statusReader))
             {
                 Recursive = true,
                 ProjectUri = Directory.GetCurrentDirectory(),
